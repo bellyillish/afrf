@@ -1,0 +1,35 @@
+FURNITURE = {
+  ["esc_m_trader"] = true,
+  ["red_m_lesnik"] = true,
+}
+
+BLACKLISTED_COMMS = {
+  ["trader"]  = true,
+  ["monster"] = true,
+}
+
+
+function get_trader_community(npc, default)
+  if FURNITURE[npc:name()] then
+      return "stalker"
+  end
+
+  local community = character_community(npc)
+
+  if not BLACKLISTED_COMMS[community] then
+      return community
+  end
+
+  local squad_community = get_object_squad(npc):get_squad_community()
+
+  if not BLACKLISTED_COMMS[squad_community] then
+      return squad_community
+  else
+      return default
+  end
+end
+
+
+function on_game_start()
+  UnregisterScriptCallback("ActorMenu_on_trade_started", a_faction_prices.ActorMenu_on_trade_started)
+end
